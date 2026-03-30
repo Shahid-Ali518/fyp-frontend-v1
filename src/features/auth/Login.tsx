@@ -3,6 +3,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useTitle } from "@/hooks/useTitle";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
+import { AuthService } from "../../components/services/AuthApiService";
+import { toast } from "sonner";
 
 interface LocationState {
   from?: { pathname: string };
@@ -20,18 +22,37 @@ const Login: React.FC = () => {
   const state = location.state as LocationState;
   const from = state?.from?.pathname || "/";
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+ const [loading, setLoading] = useState<boolean>(false);
 
-    if (!email || !password) {
-      setError("Please fill all fields.");
-      setTimeout(() => setError(""), 5000);
-      return;
-    }
+const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    // TODO: Add login API call
-    // navigate(from, { replace: true });
-  };
+  // 1. Local Validation
+  if (!email || !password) {
+    toast.warning("Please enter both email and password.");
+    return;
+  }
+
+  setLoading(true);
+  try {
+    // 2. Call the flattened LoginRequestDTO endpoint
+    const response = await AuthService.login({ email, password });
+
+    // 3. Success Handling
+    // response.data.user.name comes from your AuthResponse interface
+    toast.success(`Welcome back, ${response.data?.username || 'User'}!`);
+    
+    // Redirect to the page they were trying to access, or Dashboard
+    navigate(from, { replace: true });
+
+  } catch (err: any) {
+    // The Interceptor handles the toast. 
+    // We catch here only to stop the loading spinner or log for debugging.
+    console.error("Login Error:", err.response?.data);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-hero-bg flex items-center justify-center py-16 px-4">

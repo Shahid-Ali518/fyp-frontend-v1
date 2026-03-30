@@ -2,7 +2,10 @@ import React, { useState, FormEvent } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useTitle } from "@/hooks/useTitle";
 import { Button } from "@/components/ui/button";
+import { AuthService } from "../../components/services/AuthApiService";
 import { CheckCircle2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
 
 interface LocationState {
   from?: { pathname: string };
@@ -16,29 +19,59 @@ const Signup: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const { toast } = useToast();
 
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as LocationState;
   const from = state?.from?.pathname || "/login";
+  const [loading, setLoading] = useState<boolean>(false);
+
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Basic Validation
     if (!name || !email || !password || !confirmPassword) {
-      setError("Please fill all fields.");
-      setTimeout(() => setError(""), 5000);
+      toast({
+        title: "Registration Error",
+        description: "Please fill all required fields.",
+        variant: "destructive",
+      });
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      setTimeout(() => setError(""), 5000);
+      toast({
+        title: "Password Mismatch",
+        description: "Passwords do not match. Please check again.",
+        variant: "destructive",
+      });
       return;
     }
 
-    // TODO: Add signup API call
-    // navigate(from, { replace: true });
+    // API Call
+    setLoading(true);
+    try {
+      const response = await AuthService.register({ name, email, password });
+      
+      // Handle Success
+      toast({
+        title: "Success!",
+        description: response.message || "Registration successful! Redirecting...",
+      });
+      
+      setTimeout(() => {
+        navigate("/login", { replace: true });
+      }, 1500);
+
+    } catch (err: any) {
+      // Logic: If your interceptor handles the toast, you do nothing here.
+      // If you want a specific "Registration Failed" message:
+      console.error("Registration failed:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
