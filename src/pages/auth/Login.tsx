@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useTitle } from "@/hooks/useTitle";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
-import { AuthService } from "../../components/services/AuthApiService";
+import { AuthService } from "../../services/AuthApiService";
 import { toast } from "sonner";
 
 interface LocationState {

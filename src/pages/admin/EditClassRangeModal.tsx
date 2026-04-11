@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { ClassRangeApiService } from "@/components/services/AssessmentClassRangeApiService";
+import { ClassRangeApiService } from "@/services/AssessmentClassRangeApiService";
 
 export const EditRangeModal = ({ isOpen, data, onClose, onSuccess }: any) => {
   const [form, setForm] = useState({

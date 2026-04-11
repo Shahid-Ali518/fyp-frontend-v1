@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { QuestionApiService } from "@/components/services/QuestionApiService";
+import { QuestionApiService } from "@/services/QuestionApiService";
 
 
 export const EditQuestionModal = ({ isOpen, data, onClose, onSuccess }: any) => {

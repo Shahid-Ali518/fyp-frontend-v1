@@ -2,8 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Activity, History, Brain, ArrowUpRight, PlayCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const UserDashboard = () => {
+
+  const navigate = useNavigate();
+
+
   // Mock data for the "Attempt History"
   const history = [
     { id: 1, date: "2026-03-28", emotion: "Calm", score: 85, duration: "2m 30s" },
@@ -14,8 +19,8 @@ const UserDashboard = () => {
   return (
     <div className="min-h-screen bg-background pt-24 pb-12 px-4 md:px-8 max-w-7xl mx-auto">
       {/* Welcome Header */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }} 
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
@@ -52,13 +57,14 @@ const UserDashboard = () => {
             </div>
           </CardContent>
         </Card>
+        <Card onClick={() => navigate("/assessments")} className="bg-coral text-white shadow-lg hover:scale-[1.02] transition-transform cursor-pointer">
 
-        <Card className="bg-coral text-white shadow-lg hover:scale-[1.02] transition-transform cursor-pointer">
           <CardContent className="pt-6 flex flex-col items-center justify-center text-center h-full">
             <PlayCircle className="w-10 h-10 mb-2" />
             <h3 className="text-lg font-bold">Start New Session</h3>
             <p className="text-xs opacity-90">Analyze your current mood</p>
           </CardContent>
+
         </Card>
       </div>
 
@@ -88,9 +94,8 @@ const UserDashboard = () => {
                   <tr key={item.id} className="border-b border-border hover:bg-muted/50 transition-colors">
                     <td className="py-4 text-sm">{item.date}</td>
                     <td className="py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        item.emotion === 'Calm' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
-                      }`}>
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${item.emotion === 'Calm' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                        }`}>
                         {item.emotion}
                       </span>
                     </td>

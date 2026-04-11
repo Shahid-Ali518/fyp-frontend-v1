@@ -45,10 +45,13 @@ export const QuestionApiService = {
         return response.data;
     },
 
-    // Utility: Construct Audio URL
-    // Since your controller returns raw bytes, we point the <audio> tag to this URL
-    getAudioUrl: (questionId: string) => {
-        const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
-        return `${baseURL}/api/questions/${questionId}/audio`;
+    getAudioBlobUrl: async (questionId: string): Promise<string> => {
+        // We use the existing apiClient because it already has the Auth Headers
+        const response = await apiClient.get(`/api/questions/${questionId}/audio`, {
+            responseType: 'blob' // CRITICAL: Tells axios to handle binary data
+        });
+
+        // Create a temporary URL that the <audio> tag can understand
+        return URL.createObjectURL(response.data);
     }
 };

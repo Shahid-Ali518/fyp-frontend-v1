@@ -4,17 +4,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Edit3, Trash2, Plus, Info, Mic, ListChecks } from "lucide-react";
 import { GlobalLoader } from "@/components/ui/global-loader";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AssessmentApiService } from "@/components/services/AssessmentApiService";
-import { ClassRangeApiService } from "@/components/services/AssessmentClassRangeApiService";
-import { QuestionApiService } from "@/components/services/QuestionApiService";
-import { SurveyOptionApiService } from "@/components/services/SurveyOptionApiService";
+import { AssessmentApiService } from "@/services/AssessmentApiService";
+import { ClassRangeApiService } from "@/services/AssessmentClassRangeApiService";
+import { QuestionApiService } from "@/services/QuestionApiService";
+import { SurveyOptionApiService } from "@/services/SurveyOptionApiService";
 
 // Modals
-import { EditQuestionModal } from "@/features/admin/EditQuestionModal";
-import { EditOptionModal } from "@/features/admin/EditSurveyOptionModal";
-import { EditRangeModal } from "@/features/admin/EditClassRangeModal";
+import { EditQuestionModal } from "@/pages/admin/EditQuestionModal";
+import { EditOptionModal } from "@/pages/admin/EditSurveyOptionModal";
+import { EditRangeModal } from "@/pages/admin/EditClassRangeModal";
 
 const ManageAssessmentDetail = () => {
   const { assessmentId } = useParams();
@@ -31,7 +31,7 @@ const ManageAssessmentDetail = () => {
       const res = await AssessmentApiService.getDetailedById(assessmentId!);
       setData(res.data);
     } catch (err) {
-      toast({ variant: "destructive", title: "Fetch Error", description: "Could not sync with server." });
+      toast.error("Fetch Error", { description: "Could not sync with server." });
     } finally { setLoading(false); }
   };
 
@@ -44,10 +44,10 @@ const ManageAssessmentDetail = () => {
       if (type === 'option') await SurveyOptionApiService.delete(itemId);
       if (type === 'range') await ClassRangeApiService.delete(itemId);
       
-      toast({ title: "Removed", description: "Item deleted successfully." });
+      toast.success("Removed", { description: "Item deleted successfully." });
       fetchDetails();
     } catch (err) {
-      toast({ variant: "destructive", title: "Delete Failed" });
+      toast.error("Delete Failed", { description: "Failed to delete item." });
     }
   };
 

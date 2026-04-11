@@ -2,9 +2,9 @@ import React, { useState, FormEvent } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useTitle } from "@/hooks/useTitle";
 import { Button } from "@/components/ui/button";
-import { AuthService } from "../../components/services/AuthApiService";
+import { AuthService } from "../../services/AuthApiService";
 import { CheckCircle2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 
 interface LocationState {
@@ -19,7 +19,7 @@ const Signup: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const { toast } = useToast();
+  
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,20 +33,17 @@ const Signup: React.FC = () => {
 
     // Basic Validation
     if (!name || !email || !password || !confirmPassword) {
-      toast({
-        title: "Registration Error",
-        description: "Please fill all required fields.",
-        variant: "destructive",
+      toast.warning("Something went wrong", {
+        description: "Please fill all required fields."
       });
       return;
     }
 
     if (password !== confirmPassword) {
-      toast({
-        title: "Password Mismatch",
-        description: "Passwords do not match. Please check again.",
-        variant: "destructive",
+      toast.warning("Password Mismatch", {
+        description: "Passwords do not match. Please check again."
       });
+
       return;
     }
 
@@ -56,11 +53,11 @@ const Signup: React.FC = () => {
       const response = await AuthService.register({ name, email, password });
       
       // Handle Success
-      toast({
-        title: "Success!",
-        description: response.message || "Registration successful! Redirecting...",
-      });
-      
+      if(response.status_code == 201){
+        toast.success("Registration successful! Redirecting...",{
+          description: response.message || "Your account has been created."
+        })
+      }
       setTimeout(() => {
         navigate("/login", { replace: true });
       }, 1500);
@@ -68,7 +65,7 @@ const Signup: React.FC = () => {
     } catch (err: any) {
       // Logic: If your interceptor handles the toast, you do nothing here.
       // If you want a specific "Registration Failed" message:
-      console.error("Registration failed:", err);
+      // console.error("Registration failed:", err);
     } finally {
       setLoading(false);
     }

@@ -5,9 +5,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FileText, ListPlus, UploadCloud, Trash2, Save, ArrowRight, Loader2 } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
-import { QuestionApiService } from "@/components/services/QuestionApiService";
-import { QuestionDTO } from "@/components/types/question";
+import { toast } from "sonner";
+import { QuestionApiService } from "@/services/QuestionApiService";
+import { QuestionDTO } from "@/types/question";
 import { GlobalLoader } from "@/components/ui/global-loader";
 
 const AddQuestions = () => {
@@ -40,15 +40,11 @@ const AddQuestions = () => {
 
             // console.log(payload)
             if (res.status_code === 201) {
-                toast({ title: "Questions Added", description: res.message, variant: "default" });
+                toast.success("Questions Added", { description: res.message });
                 navigate("/admin/assessments");
             }
         } catch (error: any) {
-            toast({
-                variant: "destructive",
-                title: "Upload Failed",
-                description: error.response?.data?.detail || "Something went wrong"
-            });
+            toast.error("Upload Failed", { description: error.response?.data?.detail || "Something went wrong" });
         } finally {
             setIsSaving(false);
         }
@@ -63,11 +59,11 @@ const AddQuestions = () => {
         try {
             const res = await QuestionApiService.uploadPdf(assessmentId!, file);
             if (res.status_code === 201) {
-                toast({ title: "Success", description: "Questions extracted successfully" });
+                toast.success("Success", { description: "Questions extracted successfully" });
                 navigate("/admin/assessments");
             }
         } catch (error) {
-            toast({ variant: "destructive", title: "Parsing Failed", description: "Check PDF format" });
+            toast.error("Parsing Failed", { description: "Check PDF format" });
         } finally {
             setIsSaving(false);
         }

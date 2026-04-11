@@ -4,10 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2, Plus, Save, ArrowRight } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { GlobalLoader } from "@/components/ui/global-loader";
-import { SurveyOptionApiService } from "@/components/services/SurveyOptionApiService";
-import { SurveyOptionDTO } from "@/components/types/survey_option";
+import { SurveyOptionApiService } from "@/services/SurveyOptionApiService";
+import { SurveyOptionDTO } from "@/types/survey_option";
 
 
 
@@ -41,17 +41,13 @@ const AddSurveyOptions = () => {
       
 
       if (res.status_code === 201 || res.status_code === 200) {
-        toast({ title: "Configuration Saved", description: "Options and weightage registered." });
+        toast.success("Configuration Saved", { description: "Options and weightage registered." });
         
         // Flow Step 2: Redirect to Class Ranges
         navigate(`/admin/assessments/${assessmentId}/class-ranges`);
       }
     } catch (error: any) {
-      toast({ 
-        variant: "destructive", 
-        title: "Save Failed", 
-        description: error.response?.data?.detail || "Could not save options." 
-      });
+      toast.error("Save Failed", { description: error.response?.data?.detail || "Could not save options." });
     } finally {
       setIsSaving(false);
     }

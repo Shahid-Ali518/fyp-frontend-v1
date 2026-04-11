@@ -1,6 +1,6 @@
 import axios from "axios";
 import { toast } from "sonner";
-import { ApiResponse } from "@/components/types/apiResponse";
+import { ApiResponse } from "@/types/apiResponse";
 
 const apiClient = axios.create({
   baseURL: "http://localhost:8000", // Update with your FastAPI URL
@@ -35,7 +35,7 @@ apiClient.interceptors.response.use(
     if (status === 401) {
       toast.error("Session expired. Please login again.");
       localStorage.removeItem("token");
-      // Optional: window.location.href = "/login";
+      window.location.href = "/login";
     } else if (status === 403) {
       toast.error("You don't have permission to perform this action.");
     } else if (status === 400) {

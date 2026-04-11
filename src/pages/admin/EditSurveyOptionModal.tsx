@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SurveyOptionApiService } from "@/components/services/SurveyOptionApiService";
+import { SurveyOptionApiService } from "@/services/SurveyOptionApiService";
 
 export const EditOptionModal = ({ isOpen, data, onClose, onSuccess }: any) => {
   const [form, setForm] = useState({ text: data.option_text, weight: data.weightage });

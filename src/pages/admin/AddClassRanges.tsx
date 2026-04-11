@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Trash2, Plus, CheckCircle2, ArrowRight } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { GlobalLoader } from "@/components/ui/global-loader";
-import { AssessmentClassRangeDTO } from "@/components/types/assessment_class_range";
-import { ClassRangeApiService } from "@/components/services/AssessmentClassRangeApiService";
+import { AssessmentClassRangeDTO } from "@/types/assessment_class_range";
+import { ClassRangeApiService } from "@/services/AssessmentClassRangeApiService";
 
 const AddClassRanges = () => {
   const { assessmentId } = useParams();
@@ -41,7 +41,7 @@ const AddClassRanges = () => {
     // Simple Validation: Ensure max > min
     const isValid = ranges.every(r => r.max_score > r.min_score && r.label.trim() !== "");
     if (!isValid) {
-      toast({ variant: "destructive", title: "Validation Error", description: "Please ensure all labels are filled and max scores are greater than min scores." });
+      toast.error("Validation Error", { description: "Please ensure all labels are filled and max scores are greater than min scores." });
       return;
     }
 
@@ -49,13 +49,13 @@ const AddClassRanges = () => {
     try {
       const res = await ClassRangeApiService.addAll(assessmentId, ranges);
       if (res.status_code === 201 || res.status_code === 200) {
-        toast({ title: "Scoring Ranges Saved", description: "Now, let's add the questions." });
+        toast.success("Scoring Ranges Saved", { description: "Now, let's add the questions." });
         
         // FINAL STEP: Redirect to Questions
         navigate(`/admin/assessments/${assessmentId}/questions`);
       }
     } catch (error: any) {
-      toast({ variant: "destructive", title: "Save Failed", description: error.response?.data?.detail || "Error saving ranges." });
+      toast.error("Save Failed", { description: error.response?.data?.detail || "Error saving ranges." });
     } finally {
       setIsSaving(false);
     }

@@ -2,12 +2,12 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AssessmentDTO, AssessmentType } from "@/components/types/assessment";
+import { AssessmentDTO, AssessmentType } from "@/types/assessment";
 import { useNavigate } from "react-router-dom";
-import { AssessmentApiService } from "@/components/services/AssessmentApiService";
+import { AssessmentApiService } from "@/services/AssessmentApiService";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { useState } from "react";
 import { GlobalLoader } from "@/components/ui/global-loader";
 
@@ -30,10 +30,8 @@ const NewAssessment = () => {
                 const newId = res.data?.id;
                 const assess_type = res.data?.category_type;
 
-                toast({
-                    title: "Success",
+                toast.success("Success", {
                     description: `Redirecting to ${assess_type === 'audio_based' ? 'Voice' : 'Option'} configuration...`,
-                    variant: "default",
                 });
 
                 // Small delay before navigation looks more organic
@@ -53,9 +51,7 @@ const NewAssessment = () => {
             // Professional Error Handling
             const errorMessage = error.response?.data?.detail || error.message || "Connection lost";
 
-            toast({
-                variant: "destructive", // Coral/Red style
-                title: "Creation Failed",
+            toast.error("Creation Failed", {
                 description: errorMessage,
             });
 

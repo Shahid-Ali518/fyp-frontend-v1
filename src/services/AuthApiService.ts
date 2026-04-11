@@ -1,6 +1,6 @@
-import apiClient from "@/components/api/apiClient";
-import { ApiResponse } from "@/components/types/apiResponse";
-import { UserLogin, UserRegister, AuthResponse } from "@/components/types/auth";
+import apiClient from "@/api/apiClient";
+import { ApiResponse } from "@/types/apiResponse";
+import { UserLogin, UserRegister, AuthResponse } from "@/types/auth";
 
 export const AuthService = {
   // Now sends UserDTO directly as the request body

@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { AssessmentApiService } from "@/components/services/AssessmentApiService";
-import { AssessmentDTO, AssessmentType } from "@/components/types/assessment";
+import { AssessmentApiService } from "@/services/AssessmentApiService";
+import { AssessmentDTO, AssessmentType } from "@/types/assessment";
 import { useNavigate } from "react-router-dom";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { GlobalLoader } from "@/components/ui/global-loader";
 
 
@@ -34,18 +34,14 @@ const ManageAssessments = () => {
             setLoading(true);
             const res = await AssessmentApiService.delete(id);
             if (res.status_code === 200) {
-                toast({
-                    title: "Deleted",
-                    description: "Assessment category deleted successfully.",
-                    variant: "default",
+                toast.success("Deleted", {
+                    description: "Assessment category deleted successfully."
                 });
                 loadAssessments(); // Refresh list after deletion
                 setLoading(false);
             } else {
-                toast({
-                    title: "Deletion Failed",
+                toast.error("Deletion Failed", {
                     description: res.message || "Failed to delete category.",
-                    variant: "destructive",
                 });
 
             }

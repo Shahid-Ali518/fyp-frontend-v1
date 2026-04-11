@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, Brain, User, LogOut, Settings, LayoutDashboard, ChevronRight, ShieldCheck, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { AuthService } from "@/components/services/AuthApiService";
+import { AuthService } from "@/services/AuthApiService";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +19,7 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
   { label: "Services", href: "/services" },
+  { label: "Assessments", href: "/assessments" }
 ];
 
 const Navbar = () => {
