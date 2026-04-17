@@ -22,8 +22,10 @@ import AddSurveyOptions from "./pages/admin/AddSurveyOptions.tsx";
 import AddClassRanges from "./pages/admin/AddClassRanges.tsx";
 import ManageAssessmentDetail from "./pages/admin/ManageAssessmentDetail.tsx";
 import Assessments from "./pages/assessment/Assessments.tsx";
-import AssessmentPlayer from "./pages/assessment/AssessmentPalyer.tsx";
+import AssessmentPlayer from "./pages/assessment/OptionAssessmentPalyer.tsx";
 import AssessmentResult from "./pages/assessment/AssessmentResult.tsx";
+import AudioAssessmentPlayer from "./pages/assessment/AudioAssessmentPlayer.tsx";
+import OptionAssessmentPlayer from "./pages/assessment/OptionAssessmentPalyer.tsx";
 
 const queryClient = new QueryClient();
 
@@ -57,7 +59,15 @@ const App = () => (
               path="/assessment/start/:assessmentId"
               element={
                 <ProtectedRoute allowedRoles={["USER"]}>
-                  <AssessmentPlayer />
+                  <OptionAssessmentPlayer />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/assessment/start/voice/:assessmentId/:attemptId"
+              element={
+                <ProtectedRoute allowedRoles={["USER"]}>
+                  <AudioAssessmentPlayer />
                 </ProtectedRoute>
               }
             />

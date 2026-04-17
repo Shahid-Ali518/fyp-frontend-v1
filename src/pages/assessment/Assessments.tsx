@@ -26,7 +26,7 @@ const Assessments = () => {
     const loadTests = async () => {
       try {
         const res = await AssessmentApiService.getAll();
-        console.log("Fetched Assessments:", res.data);
+        // console.log("Fetched Assessments:", res.data);
         if (res.status_code === 200){
             setAssessments(res.data);
 

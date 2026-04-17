@@ -12,16 +12,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import OptionInput from "../../components/OptionInput";
 import VoiceInput from "../../components/VoiceInput";
 import AudioQuestionPlayer from "../../components/QuestionAudioPalyer";
+import { EmotionDetectionApiService } from "@/services/EmotionDetectionApiService";
 
-const AssessmentPlayer = () => {
+const OptionAssessmentPlayer = () => {
   const { assessmentId } = useParams();
+  const { attemptId } = useParams();
+
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [test, setTest] = useState<any>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, any>>({});
-  const [attemptId, setAttemptId] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false); // New state for AI loading
 
   useEffect(() => {
     const loadFullTest = async () => {
@@ -40,7 +43,12 @@ const AssessmentPlayer = () => {
 
   const currentQuestion = test?.questions[currentIndex];
   const progress = ((currentIndex + 1) / (test?.questions.length || 1)) * 100;
-  const isVoiceCategory = test?.category_type?.toLowerCase().includes("voice");
+  const isVoiceCategory = test?.category_type === "audio_based";
+
+
+  // console.log("Is Voice Category:", isVoiceCategory);
+
+
 
   const handleNext = () => {
     if (currentIndex < test.questions.length - 1) {
@@ -51,31 +59,47 @@ const AssessmentPlayer = () => {
   };
 
   const handleVoiceUpload = async (blob: Blob) => {
+    setIsAnalyzing(true);
     try {
-      // In a real production app, you upload the blob to your FastAPI S3/Storage 
-      // and save the file path in the QuestionResult table.
-      // For now, we simulate success:
-      setAnswers({ ...answers, [currentQuestion.id]: "voice_recorded" });
-      toast.success("Recording saved locally");
-      handleNext();
+      const formData = new FormData();
+      // Ensure we use .wav to match the Blob type
+      const audioFile = new File([blob], "recording.wav", { type: "audio/wav" });
+
+      formData.append("attempt_id", attemptId!);
+      formData.append("question_id", currentQuestion?.id);
+      formData.append("file", audioFile);
+
+      const response = await EmotionDetectionApiService.predictEmotion(formData);
+
+      if (response.status_code === 200) {
+        toast.success("Analysis complete");
+        // Mark as answered
+        setAnswers((prev) => ({ ...prev, [currentQuestion?.id]: true }));
+        // Move to next question
+        handleNext();
+      }
     } catch (err) {
-      toast.error("Voice upload failed");
+      toast.error("Analysis failed. Check your connection.");
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
   const submitAssessment = async () => {
+    let finalAttemptId = attemptId;
     setLoading(true);
     try {
-      let finalAttemptId = attemptId;
 
       if (isVoiceCategory) {
-        /** * VOICE FLOW: 
-         * Trigger the backend analysis method 'take_voice_based_attempt'
-         * Since voice results are often processed per question, 
-         * we assume the attempt record already exists or we trigger final analysis here.
-         */
-        // const res = await AssessmentAttemptApiService.takeAudioBasedAssessment(attemptId);
-        // finalAttemptId = res.data.id;
+        // 4. Trigger the final calculation method on backend
+        const res = await AssessmentAttemptApiService.takeAudioBasedAssessment(attemptId!);
+        if (res.status_code === 201) {
+          finalAttemptId = res.data.id;
+          toast.success("Assessment Complete");
+          navigate(`/assessment/results/${finalAttemptId}`);
+          setLoading(false);
+          return;
+        }
       } else {
         /** * OPTION FLOW: 
          * Standard payload submission
@@ -92,7 +116,7 @@ const AssessmentPlayer = () => {
 
         const res = await AssessmentAttemptApiService.takeOptionBasedAssessment(payload);
         console.log("Submission Response:", res);
-        
+
         if (res.status_code === 201) {
           finalAttemptId = res.data.id;
           toast.success("Assessment Complete");
@@ -135,7 +159,15 @@ const AssessmentPlayer = () => {
           </div>
         </div>
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait"
+          onExitComplete={() => {
+            // This is the "Nuclear Option"
+            // It finds any stray tracks and kills them after the animation ends
+            navigator.mediaDevices.getUserMedia({ audio: true })
+              .then(stream => stream.getTracks().forEach(track => track.stop()))
+              .catch(() => { }); // Ignore if already closed
+          }}
+        >
           <motion.div
             key={currentIndex}
             initial={{ x: 10, opacity: 0 }}
@@ -152,7 +184,10 @@ const AssessmentPlayer = () => {
 
             <div className="flex-1 flex flex-col justify-center">
               {isVoiceCategory ? (
-                <VoiceInput onUpload={handleVoiceUpload} />
+                <VoiceInput
+                  key={`voice-${currentIndex}`} // Unique key per question
+                  onUpload={handleVoiceUpload}
+                />
               ) : (
                 <OptionInput
                   options={test.options}
@@ -168,11 +203,18 @@ const AssessmentPlayer = () => {
               </p>
               <Button
                 onClick={handleNext}
-                disabled={!answers[currentQuestion?.id]}
+                // Disable button if no answer OR if currently uploading to AI
+                disabled={!answers[currentQuestion?.id] || isAnalyzing}
                 className="px-10 h-14 rounded-full gap-2 shadow-lg hover:scale-105"
               >
-                {currentIndex === test.questions.length - 1 ? "Finish" : "Next"}
-                <ChevronRight className="w-4 h-4" />
+                {isAnalyzing ? (
+                  "Analyzing..."
+                ) : currentIndex === test.questions.length - 1 ? (
+                  "Finish"
+                ) : (
+                  "Next"
+                )}
+                {!isAnalyzing && <ChevronRight className="w-4 h-4" />}
               </Button>
             </div>
           </motion.div>
@@ -182,4 +224,4 @@ const AssessmentPlayer = () => {
   );
 };
 
-export default AssessmentPlayer;
+export default OptionAssessmentPlayer;
