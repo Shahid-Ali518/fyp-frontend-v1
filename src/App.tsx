@@ -26,6 +26,7 @@ import AssessmentPlayer from "./pages/assessment/OptionAssessmentPalyer.tsx";
 import AssessmentResult from "./pages/assessment/AssessmentResult.tsx";
 import AudioAssessmentPlayer from "./pages/assessment/AudioAssessmentPlayer.tsx";
 import OptionAssessmentPlayer from "./pages/assessment/OptionAssessmentPalyer.tsx";
+import EmotionAnalysis from "./pages/user/EmotionAnalysis.tsx";
 
 const queryClient = new QueryClient();
 
@@ -84,6 +85,14 @@ const App = () => (
               element={
                 <ProtectedRoute allowedRoles={["USER"]}>
                   <AssessmentResult />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/emotion-analysis"
+              element={
+                <ProtectedRoute allowedRoles={["USER"]}>
+                  <EmotionAnalysis />
                 </ProtectedRoute>
               }
             />

@@ -12,6 +12,16 @@ export const EmotionDetectionApiService = {
         },
     });
     return response.data;
+  },
+
+  // POST /api/emotion-detection-by-model-v1/upload-audio
+  predictEmotionByModelV1: async (formData: FormData): Promise<ApiResponse<any>> => {
+    const response = await apiClient.post("/api/emotions/predict-emotion-by-wavlm-v1", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
   }
 
 }
