@@ -11,7 +11,7 @@ export const UserApiService = {
     return response.data;
   },
 
-  // get user history
+  // get user history by admin (for admin user management)
   getUserHistory: async (userId: string): Promise<ApiResponse<UserHistoryDTO[]>> => {
     const response = await apiClient.get<ApiResponse<UserHistoryDTO[]>>(`/api/users/admin/${userId}/history`);
     return response.data;
@@ -23,5 +23,12 @@ export const UserApiService = {
   deleteUser: async (userId: string): Promise<ApiResponse<void>> => {
     const response = await apiClient.delete<ApiResponse<void>>(`/api/users/admin/${userId}`);
     return response.data;
-  }
+  },
+
+  // get user history by user (for user dashboard)
+  // NEW: Standard user calling their own history profile route
+  getSelfProfileHistory: async (): Promise<ApiResponse<UserHistoryDTO>> => {
+    const response = await apiClient.get<ApiResponse<UserHistoryDTO>>("/api/users/npkm run devprofile-history");
+    return response.data;
+  },
 };

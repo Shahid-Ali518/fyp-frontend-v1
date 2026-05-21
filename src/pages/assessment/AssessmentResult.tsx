@@ -64,7 +64,7 @@ const AssessmentResult = () => {
                             Analysis Conclusion
                         </span>
                         <h2 className="text-6xl font-bold text-slate-900 mt-4 tracking-tight">
-                            {result.state}
+                            {result.test_state}
                         </h2>
                     </div>
 

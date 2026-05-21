@@ -85,6 +85,18 @@ const Navbar = () => {
               Emotion Analysis
             </Link>
           )}
+          {/* New Clinical Intake Tab - Desktop */}
+          {isLoggedIn && userRole === "USER" && (
+            <Link
+              to="/interview"
+              className={`text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 ${
+                location.pathname === "/interview" ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
+              <Activity className="w-4 h-4" />
+              Clinical Intake
+            </Link>
+          )}
         </nav>
 
         {/* Desktop Auth Section */}

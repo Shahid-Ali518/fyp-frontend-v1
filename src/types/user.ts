@@ -1,3 +1,5 @@
+import { TestAttempt } from "./test_attempt";
+
 // for admin summary users
 export interface UserSummaryDTO {
   id: string;
@@ -16,6 +18,6 @@ export interface UserHistoryDTO {
   role: string;
   created_at: string;
     
-//   test_attempts: TestAttemptDTO[];
+  test_attempts: TestAttempt[];
 
 }

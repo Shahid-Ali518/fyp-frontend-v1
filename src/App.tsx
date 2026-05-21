@@ -27,6 +27,7 @@ import AssessmentResult from "./pages/assessment/AssessmentResult.tsx";
 import AudioAssessmentPlayer from "./pages/assessment/AudioAssessmentPlayer.tsx";
 import OptionAssessmentPlayer from "./pages/assessment/OptionAssessmentPalyer.tsx";
 import EmotionAnalysis from "./pages/user/EmotionAnalysis.tsx";
+import ClinicalIntake from "./pages/assessment/ClinicalIntake.tsx";
 
 const queryClient = new QueryClient();
 
@@ -93,6 +94,16 @@ const App = () => (
               element={
                 <ProtectedRoute allowedRoles={["USER"]}>
                   <EmotionAnalysis />
+                </ProtectedRoute>
+              }
+            />
+
+
+            <Route
+              path="/interview"
+              element={
+                <ProtectedRoute allowedRoles={["USER"]}>
+                  <ClinicalIntake />
                 </ProtectedRoute>
               }
             />
